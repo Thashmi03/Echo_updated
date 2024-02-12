@@ -26,7 +26,32 @@ func PdfAPI(c echo.Context) error{
 var db *sql.DB
 var err error
 var lastBatchTime time.Time
+func Database(){
+	db, err = sql.Open("sqlite3", "./subscribers.db")
+	if err != nil {
+		panic(err)
+	}
+	// defer db.Close()
 
+	// Create table if not exists
+	createTable := `
+	CREATE TABLE IF NOT EXISTS subscribers (
+  		email TEXT PRIMARY KEY,
+   		posted BOOLEAN,
+		batch_id INTEGER DEFAULT 0,
+		FOREIGN KEY (batch_id) REFERENCES batch(batch_id)
+	);  
+	`
+	_, err = db.Exec(createTable)
+
+	createTable1 := `
+	CREATE TABLE IF NOT EXISTS batch (
+		batch_id INTEGER PRIMARY KEY AUTOINCREMENT,
+		created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+	);
+	`
+	_, err = db.Exec(createTable1)
+}
 func EmailIDAPI(c echo.Context) error {
 	// Parse request body
 	var email model.Email
