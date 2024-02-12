@@ -15,5 +15,7 @@ func Echoroutes(e *echo.Echo) {
 	e.GET("/pdfapi", service.PdfAPI,ratelimitter.CombinedRateLimiter())
 	//emailid
 	e.POST("/subscribe", service.EmailIDAPI,ratelimitter.CombinedRateLimiter())
-
+	e.Static("/static", "./content")
+    //recapcha
+	e.POST("/submit", service.CapcheAPI)
 }
